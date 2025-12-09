@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" style="display:flex;height:100%;flex-direction:column;">
+<head>
+    <meta charset="utf-8" />
+    <title>ESP32 Bluetooth Keyboard</title>
+    <base href='./' />
+    <link rel="stylesheet" href="https://nukcanon.github.io/nukcanon/css/style.css" />
+    <script type="module" src="https://unpkg.com/esp-web-tools@9.0.3/dist/web/install-button.js?module"></script>
+</head>
+<body style="padding-bottom:3px;align-items:center">
+    <div class="topbanner">
+        <div style="align-self:stretch;width:960px;display:flex; flex-direction: row;">
+            <div style="flex:99999">
+                <label>Nukcanon</label>
+            </div>
+            <div>
+                <a target="_self" href="https://nukcanon.github.io/nukcanon/index.html">Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin: auto; padding: 0px 6px 36px; max-width: 960px;">
+        <div class='navfoldercontainer'>
+            <div class='navfolder'>
+                <h2>ESP32 블루투스 키보드 만들기<br>
+                [ Bluetooth LE Keyboard ]</h2>
+            </div>
+            
+            <div style="padding: 20px; line-height: 1.6; text-align: center;">
+                <h3>[ 전체 회로도 ]</h3>
+                <img src="https://nukcanon.github.io/ESP32_BLE_keyboard/circuit_diagram.jpg" alt="ESP32 BLE Keyboard 회로도" style="width:100%; max-width:800px; border: 1px solid #ccc; border-radius: 8px;">
+                <p class="step-desc" style="text-align: center;">모든 실습은 위 회로도를 기반으로 진행됩니다.</p>
+            </div>
+
+            <div style="padding: 20px; line-height: 1.6;">
+                <ol class="step-list">
+                    
+                    <li>
+                        <strong>1. LED 제어 기초 (Breathing Light)</strong>
+                        <span class="step-desc">PWM 신호를 사용하여 LED 밝기를 부드럽게 조절해봅니다.</span>
+                        
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>부품 핀</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 15</td><td>LED (+)</td><td>긴 다리 (Anode)</td></tr>
+                                <tr><td>GND</td><td>LED (-)</td><td>짧은 다리 (Cathode)</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/breathing.ino" download>💾 breathing.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>2. 버튼 입력 기초 (Button Input)</strong>
+                        <span class="step-desc">버튼을 눌렀을 때 LED를 켜고 끄는 방법을 배웁니다. (풀업 저항 활용)</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>설명</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 15</td><td>LED</td><td>출력 (Output)</td></tr>
+                                <tr><td>GPIO 14</td><td>버튼 (스위치)</td><td>입력 (Input_Pullup)</td></tr>
+                                <tr><td>GND</td><td>버튼 & LED</td><td>공통 접지</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/button.ino" download>💾 button.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>3. 시리얼 통신으로 LED 제어 (Serial LED)</strong>
+                        <span class="step-desc">컴퓨터에서 명령어를 보내 LED를 제어해봅니다.</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>설명</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 15</td><td>LED</td><td>제어 대상</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/serial_led_control.ino" download>💾 serial_led_control.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>4. 버튼 상태 시리얼 모니터링</strong>
+                        <span class="step-desc">버튼의 눌림 상태를 컴퓨터 화면(시리얼 모니터)으로 확인합니다.</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>설명</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 14</td><td>버튼 1</td><td>입력</td></tr>
+                                <tr><td>GPIO 27</td><td>버튼 2</td><td>입력</td></tr>
+                                <tr><td>GPIO 26</td><td>버튼 3</td><td>입력</td></tr>
+                                <tr><td>GPIO 25</td><td>버튼 4</td><td>입력</td></tr>
+                                <tr><td>GND</td><td>버튼 공통</td><td>접지</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/serial_button_receive.ino" download>💾 serial_button_receive.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>5. 키패드(매트릭스) 입력 처리</strong>
+                        <span class="step-desc">4x4 키패드 모듈의 입력을 처리하는 방법을 배웁니다.</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>키패드 핀</th><th>역할</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 13, 12, 14, 27</td><td>행 (Rows)</td><td>R1, R2, R3, R4</td></tr>
+                                <tr><td>GPIO 26, 25, 33, 32</td><td>열 (Cols)</td><td>C1, C2, C3, C4</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group" style="background-color: #fff3cd; border-color: #ffeeba;">
+                            <p><strong>[ 필수 라이브러리 설치 ]</strong></p>
+                            <p style="font-size: 0.9em; margin-bottom: 0;">아두이노 IDE 메뉴: <strong>스케치 &gt; 라이브러리 포함하기 &gt; 라이브러리 관리</strong><br>
+                            검색창에 <strong>"Keypad"</strong> 입력 후 <strong>Mark Stanley, Alexander Brevig</strong> 버전 설치</p>
+                        </div>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/serial_keypad.ino" download>💾 serial_keypad.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>6. 블루투스 클래식 LED 제어</strong>
+                        <span class="step-desc">블루투스(Classic)로 연결하여 LED를 제어합니다.</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>설명</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 15</td><td>LED</td><td>블루투스 신호로 제어</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/blclassic_led.ino" download>💾 blclassic_led.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>7. 블루투스 클래식 버튼 전송</strong>
+                        <span class="step-desc">버튼을 누르면 블루투스(Classic)로 메시지를 전송합니다.</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>설명</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 14</td><td>버튼</td><td>누르면 신호 전송</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/blclassic_button.ino" download>💾 blclassic_button.ino 다운로드</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>8. ESP32 블루투스 키보드 (최종 프로젝트)</strong>
+                        <span class="step-desc">PC와 연결되는 무선 단축키 키보드를 만듭니다. Microsoft PowerToys와 연동하여 강력한 기능을 수행합니다.</span>
+
+                        <p style="font-weight: bold; margin-top: 10px;">[ 배선표 (최종) ]</p>
+                        <table class="wiring-table">
+                            <thead><tr><th>ESP32 핀</th><th>연결 부품</th><th>역할</th></tr></thead>
+                            <tbody>
+                                <tr><td>GPIO 13, 12, 14, 27</td><td>키패드 행</td><td>Row 1 ~ 4</td></tr>
+                                <tr><td>GPIO 26, 25, 33, 32</td><td>키패드 열</td><td>Col 1 ~ 4</td></tr>
+                                <tr><td>GPIO 15</td><td>상태 LED</td><td>블루투스 연결/동작 표시</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="file-group" style="background-color: #e8f4fd; border-color: #b6d4fe;">
+                            <p><strong>[ 필수 준비물 ]</strong></p>
+                            <p style="font-size: 0.9em; margin-bottom: 5px;">
+                                1. <strong>Keypad 라이브러리</strong> 설치 (아두이노 라이브러리 매니저)<br>
+                                2. 아래 <strong>NimBLE 라이브러리(.zip)</strong> 다운로드 및 추가<br>
+                                (스케치 &gt; 라이브러리 포함하기 &gt; .ZIP 라이브러리 추가)
+                            </p>
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/ESP32-NimBLE-Keyboard-master.zip" download style="font-weight:bold; color:#d63384;">📦 커스텀 ESP32-NimBLE-Keyboard-master.zip 다운로드</a>
+                        </div>
+
+                        <div class="file-group">
+                            <a href="https://nukcanon.github.io/ESP32_BLE_keyboard/keyboard.ino" download>💾 keyboard.ino (메인 소스)</a>
+                        </div>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+                        </div>
+                        <div class="file-group" style="margin-top: 15px;">
+                            <p><strong>[ 활용 소프트웨어 ]</strong></p>
+                            <p style="font-size: 0.9em;">이 키보드는 Microsoft PowerToys의 'Keyboard Manager'와 함께 사용할 때 가장 강력합니다.</p>
+                            <a href="https://github.com/microsoft/PowerToys/releases/download/v0.96.1/PowerToysUserSetup-0.96.1-x64.exe" target="_blank">🪟 Microsoft PowerToys 다운로드 (x64)</a>
+                        </div>
+                    </li>
+
+                </ol>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
