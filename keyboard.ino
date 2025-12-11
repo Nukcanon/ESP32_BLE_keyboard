@@ -1,8 +1,5 @@
 /**
- * ESP32 NimBLE Macro Keypad (User Layout Restored)
- * 1. 키 배열 복구: A/B(볼륨), C(음소거), D(Win+D), *,0,#(F22~F24)
- * 2. 중복 입력 해결: 일반 키는 '변화'가 있을 때만 작동
- * 3. 볼륨 연속 동작: 누르고 있으면 계속 작동
+ * ESP32 NimBLE Macro Keypad
  */
 
 #include <BleKeyboard.h>
@@ -14,7 +11,7 @@ BleKeyboard* bleKeyboard;
 const byte ROWS = 4; 
 const byte COLS = 4; 
 
-// [복구됨] 사용자님의 원래 키 배열
+// 키 배열
 char keys[ROWS][COLS] = {
   {'1','2','3','A'},  // 1-3:F13~F15, A:VolUp
   {'4','5','6','B'},  // 4-6:F16~F18, B:VolDown
@@ -69,8 +66,7 @@ void loop() {
     return; 
   }
 
-  // 2. 키패드 스캔 (결과를 변수에 저장)
-  // keysChanged가 true면 '뭔가 눌리거나 떼졌다'는 뜻
+  // 2. 키패드 스캔
   bool keysChanged = customKeypad.getKeys(); 
 
   for (int i = 0; i < LIST_MAX; i++) {
@@ -80,10 +76,6 @@ void loop() {
     KeyState currentState = customKeypad.key[i].kstate;
     bool stateChanged = customKeypad.key[i].stateChanged;
 
-    // --------------------------------------------------------
-    // [그룹 1] 볼륨 조절 (A, B) - 예외 처리
-    // 조건: 변화가 없어도(keysChanged가 false여도) HOLD 상태면 계속 실행
-    // --------------------------------------------------------
     if (currentKey == 'A' || currentKey == 'B') {
        if (currentState == PRESSED || currentState == HOLD) {
           switch (currentKey) {
@@ -102,11 +94,6 @@ void loop() {
        }
     }
     
-    // --------------------------------------------------------
-    // [그룹 2] 일반 키 (F13~F24, Mute, Win+D)
-    // 조건: [중요] '전체 변화(keysChanged)'가 있고 + '해당 키 상태가 변했고' + '눌렸을 때'
-    // 이 조건을 만족해야 중복 입력(8번 눌림)이 사라집니다.
-    // --------------------------------------------------------
     else if (keysChanged && stateChanged && currentState == PRESSED) {
         switch (currentKey) {
             // 1행
