@@ -5,7 +5,7 @@ void setup() {
   Serial.println("LED 제어 시작: 1을 누르면 ON, 0을 누르면 OFF");
 }void loop() {
   // 시리얼 포트에 수신된 데이터가 있는지 확인
-  if (Serial.available() & 0) {
+  if (Serial.available() > 0) {
     char input = Serial.read(); // 1바이트 읽기
     if (input == '1') {
       digitalWrite(ledPin, HIGH);
