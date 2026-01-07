@@ -5,7 +5,7 @@ void setup() {
   pinMode(buttonPin, INPUT_PULLUP);
 }void loop() {
   int currentState = digitalRead(buttonPin); // 현재 버튼 상태 읽기
-  // 상태가 변했을 때만 출력 (도배 방지)
+  // 상태가 변했을 때만 출력
   if (currentState != lastState) {
     if (currentState == LOW) {
       Serial.println("버튼이 눌렸습니다!");
